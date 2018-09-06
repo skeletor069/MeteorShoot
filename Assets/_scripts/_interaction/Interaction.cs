@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class Interaction : MonoBehaviour {
 	IInteractionListener notifier;
+	protected bool initiated = false;
 	
 	public void Initiate(IInteractionListener notifier){
 		this.notifier = notifier;
+		initiated = true;
 	}
 
 	protected void Fire(Vector3 worldPosition){

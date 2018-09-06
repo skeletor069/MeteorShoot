@@ -7,7 +7,7 @@ public struct MissileData{
 	public Vector3 targetPos;
 	public Transform lockTarget;
 	public Missile missile;
-	public IMissileListener notifier;
+	public int weaponIndex;
 }
 
 public class Missile : MonoBehaviour {
@@ -21,6 +21,9 @@ public class Missile : MonoBehaviour {
 	WaitForEndOfFrame endOfFrame = new WaitForEndOfFrame();
 	WaitForSeconds wait1s = new WaitForSeconds(1);
 	CircleCollider2D collider;
+	IMissileListener notifier;
+	MissileData missileData;
+	bool readyToReload = false;
 
 
 	// Use this for initialization
@@ -32,9 +35,15 @@ public class Missile : MonoBehaviour {
 		collider = GetComponent<CircleCollider2D>();
 		trail = GetComponent<TrailRenderer>();
 	}
+
+	public void Initiate(IMissileListener notifier){
+		this.notifier = notifier;
+	}	
 	
 
 	public IEnumerator HitTarget(MissileData missileData){
+		this.missileData = missileData;
+		readyToReload = true;
 		explosion2d.SetActive(false);
 		collider.enabled = false;
 		renderer.enabled = true;
@@ -58,11 +67,13 @@ public class Missile : MonoBehaviour {
 		missileData.lockTarget.gameObject.SetActive(false);
 		yield return wait1s;
 		collider.enabled = false;
-		missileData.notifier.NotifyExplosion(missileData.lockTarget, missileData.missile);
+		notifier.NotifyExplosion(missileData.lockTarget, missileData.missile);
 	}
 
 	void OnTriggerEnter2D(Collider2D col){
-		Debug.Log(col.name);
-		col.GetComponent<Meteor>().Destroyed();
+		if(col.GetComponent<Meteor>().Destroyed() && readyToReload){
+			notifier.NotifySuccessfulDestroy(missileData.weaponIndex);
+			readyToReload = false;
+		}
 	}
 }

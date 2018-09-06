@@ -21,9 +21,11 @@ public class InteractionControllerTouch : Interaction {
 	}
 
 	public void TouchStart(){
-		renderer.color = activeColor;
-		touchingDown = true;
-		startPos = Input.mousePosition;
+		if(initiated){
+			renderer.color = activeColor;
+			touchingDown = true;
+			startPos = Input.mousePosition;
+		}
 	}
 
 	public void TouchEnd(){
@@ -34,7 +36,7 @@ public class InteractionControllerTouch : Interaction {
 	}
 
 	void Update(){
-		if (touchingDown) {
+		if (touchingDown && initiated) {
 			// currentTranslate = Input.mousePosition - startPos;
 			// currentTranslate.z = 0;
 			// float length = currentTranslate.magnitude * 2.5f / 200f; 

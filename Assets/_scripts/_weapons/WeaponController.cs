@@ -29,6 +29,9 @@ public class WeaponController : MonoBehaviour, IInteractionListener, IMissileLis
 
 		for(int i = 0 ; i < lockTargetsHolder.childCount; i++)
 			lockTargetsPool.Add(lockTargetsHolder.GetChild(i));
+
+		for(int i = 0 ; i < missilePool.Count; i++)
+			missilePool[i].Initiate(this);
 	}
 
 	public void Initiate(int leftChamber, int centerChamber, int rightChamber){
@@ -85,7 +88,7 @@ public class WeaponController : MonoBehaviour, IInteractionListener, IMissileLis
 			data.targetPos = worldPos;
 			data.lockTarget = lockTarget;
 			data.missile = missile;
-			data.notifier = this;
+			data.weaponIndex = weaponIndex;
 			StartCoroutine(missile.HitTarget(data));
 		}
 	}
@@ -103,6 +106,11 @@ public class WeaponController : MonoBehaviour, IInteractionListener, IMissileLis
 		lockTarget.position = lockTrgetDefaultPosition;
 		lockTargetsPool.Add(lockTarget);
 		missilePool.Add(missile);
+	}
+
+	public void NotifySuccessfulDestroy(int weaponIndex){
+		chambers[weaponIndex]++;
+		chamberUI[weaponIndex].ReloadOne();
 	}
 
 

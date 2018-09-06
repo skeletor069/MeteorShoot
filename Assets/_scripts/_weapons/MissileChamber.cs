@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class MissileChamber : MonoBehaviour {
 
 	List<GameObject> bullets = new List<GameObject>();
+	int totalCount = 0;
 	int currentIndex = 0;
 
 	void Awake () {
@@ -15,6 +16,7 @@ public class MissileChamber : MonoBehaviour {
 	}
 	
 	public void Initiate(int count){
+		this.totalCount = count;
 		for(int i = 0 ; i < bullets.Count; i++){
 			if(i >= count)
 				bullets[i].SetActive(false);
@@ -24,5 +26,10 @@ public class MissileChamber : MonoBehaviour {
 	public void Consume(){
 		bullets[currentIndex].SetActive(false);
 		currentIndex++;
+	}
+
+	public void ReloadOne(){
+		currentIndex--;
+		bullets[currentIndex].SetActive(true);
 	}
 }

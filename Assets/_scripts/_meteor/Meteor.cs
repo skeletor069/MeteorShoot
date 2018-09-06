@@ -26,11 +26,16 @@ public class Meteor : MonoBehaviour {
 		trail.enabled = true;
 	}
 
-	public void Destroyed(){
-		trail.enabled = false;
-		transform.position = defaultPos;
-		MeteorGeneration.instance.AddToMeteorPool(this);
-		falling = false;
+	public bool Destroyed(){
+		if(falling){
+			trail.enabled = false;
+			transform.position = defaultPos;
+			BattleController.instance.MeteorDestroyed();
+			MeteorGeneration.instance.AddToMeteorPool(this);
+			falling = false;
+			return true;
+		}
+		return false;
 	}
 
 	void Update () {
@@ -40,6 +45,7 @@ public class Meteor : MonoBehaviour {
 				falling = false;
 				trail.enabled = false;
 				transform.position = startPos;
+				BattleController.instance.GameOver();
 			}
 		}
 	}
